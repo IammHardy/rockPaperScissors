@@ -63,6 +63,7 @@ buttons.forEach(button =>{
     const playerChoice = e.target.closest('button').getAttribute('data-choice');
 
     playRound(playerChoice);
+    resultDisplay.style.fontSize ='40px';
   });
   
 })
