@@ -1,94 +1,132 @@
+let playerLives = 10;
+let computerLives = 10;
+let playerPoints = 0;
+let computerPoints = 0;
 
+const resultDisplay = document.getElementById('result');
+const tryAgainButton = document.getElementById('tryAgain');
+const scoreDisplay = document.getElementById('score');
+const buttons = document.querySelectorAll('.choice');
+const show = document.getElementById('show');
+const playerLiveSpan = document.getElementById("playerLives");
+const computerLiveSpan = document.getElementById("computerLives");
+const playerPointSpan = document.getElementById("playerPoints");
+const computerPointSpan = document.getElementById("computerPoints");
+const leaderboard = document.getElementById("leaderboard"); // New leaderboard element
 
-
-
-
-let humanScore = 0;
-let compScore = 0;
-
-const resultDisplay = document.getElementById('result')
-const tryAgainButton = document.getElementById('tryAgain')
-const scoreDisplay = document.getElementById('score')
-const buttons = document.querySelectorAll('button')
-
-function updateScore(){
-  scoreDisplay.textContent = `Human: ${humanScore} Computer: ${compScore}`
-
+// Function to get computer choice
+function getComputerChoice() {
+    const options = ['rock', 'paper', 'scissors'];
+    const randomIndex = Math.floor(Math.random() * options.length);
+    return options[randomIndex];
 }
 
-function checkWinner(){
-  if(humanScore === 5 || compScore === 5){
-    const winner = humanScore === 5 ? "Human" : "Computer";
-    resultDisplay.textContent = `${winner} wins the game!`;
-    buttons.forEach(button => button.disabled =true);
-    tryAgainButton.style.display = "block"
-    tryAgainButton.disabled=false;
-    resultDisplay.style.fontSize ='40px'
-    return true;
-  }
-  return false;
+// Game rules including Lizard and Spock
+const rules = {
+    rock: ['scissors'],
+    paper: ['rock'],
+    scissors: ['paper'],
+};
+
+function playGame(humanChoice) {
+    const computerChoice = getComputerChoice();
+
+    console.log(`Human Choice: ${humanChoice}`);
+    console.log(`Computer Choice: ${computerChoice}`);
+
+    if (humanChoice === computerChoice) {
+        resultDisplay.textContent = "It's a tie!";
+    } else if (rules[humanChoice].includes(computerChoice)) {
+        resultDisplay.textContent = `You Win! ${humanChoice} beats ${computerChoice}`;
+        playerPoints += 1;
+        computerLives -= 1;
+    } else {
+        resultDisplay.textContent = `You Lose! ${computerChoice} beats ${humanChoice}`;
+        computerPoints += 1;
+        playerLives -= 1;
+    }
+
+    // Update Lives and Points in the DOM
+    playerLiveSpan.textContent = playerLives;
+    computerLiveSpan.textContent = computerLives;
+    playerPointSpan.textContent = playerPoints;
+    computerPointSpan.textContent = computerPoints;
+
+    // Check for Game Over
+    if (playerLives === 0 || computerLives === 0) {
+        resultDisplay.textContent = playerLives === 0
+            ? "Game Over! You lost!"
+            : "Congratulations! You won!";
+        disableButtons();
+        tryAgainButton.style.display = 'block';
+    }
+
+    // Update Leaderboard
+    updateLeaderboard();
 }
 
+function disableButtons() {
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+}
 
-function playRound(humanChoice){
- 
-  if(humanScore === 5 || compScore === 5){
-    return;
-  }
+function enableButtons() {
+    buttons.forEach(button => {
+        button.disabled = false;
+    });
+}
 
-  const choices = ["rock", "paper", "scissors"];
-   computerChoice = choices[Math.floor(Math.random()* choices.length)]
-
-  if (humanChoice === computerChoice.toLowerCase()){
-    resultDisplay.textContent = `It's a DRAW `
-    humanScore++, compScore++
-
-  }else if((humanChoice === 'rock' && computerChoice.toLowerCase() === 'scissors') ||
-   (humanChoice === "paper" && computerChoice.toLowerCase() === "rock")
-   || (humanChoice === 'scissors' && computerChoice.toLowerCase() === "paper")){
-    resultDisplay.textContent = `You Win!  ${humanChoice}  beats  ${computerChoice}.`
-    humanScore++
-   }else{
-    resultDisplay.textContent = `You lose!!  ${computerChoice}  beats  ${humanChoice}. `
-    compScore++
-   }
-   updateScore()
-   checkWinner()
-   
- }
-
-
-buttons.forEach(button =>{
-  button.addEventListener('click', (e) =>{
-    const playerChoice = e.target.closest('button').getAttribute('data-choice');
-
-    playRound(playerChoice);
-    resultDisplay.style.fontSize ='40px';
-  });
-  
-})
-
-tryAgainButton.addEventListener('click', () =>{
-  humanScore = 0;
-  compScore= 0;
-  updateScore();
-  resultDisplay.innerHTML = ''
-  tryAgainButton.style.display ='none';
-
-  
-  buttons.forEach(button => button.disabled = false);
+tryAgainButton.addEventListener('click', () => {
+    playerLives = 10;
+    computerLives = 10;
+    playerPoints = 0;
+    computerPoints = 0;
+    resultDisplay.textContent = '';
+    scoreDisplay.textContent = '';
+    playerLiveSpan.textContent = playerLives;
+    computerLiveSpan.textContent = computerLives;
+    playerPointSpan.textContent = playerPoints;
+    computerPointSpan.textContent = computerPoints;
+    tryAgainButton.style.display = 'none';
+    enableButtons();
 });
 
-const hideResult = document.getElementById('show')
+buttons.forEach(button => {
+    button.addEventListener('click', (event) => {
+        const humanChoice = event.currentTarget.getAttribute('data-choice');
+        playGame(humanChoice);
+    });
+});
 
-updateScore()
+// Update leaderboard with number of games won/lost
+function updateLeaderboard() {
+    leaderboard.textContent = `Player Points: ${playerPoints} | Computer Points: ${computerPoints}`;
+  }
 
+// Sound effects
+function playSound(effect) {
+    const audio = new Audio(`sounds/${effect}.mp3`);
+    audio.play();
+}
 
+// Add sound effects to win/loss/tie
+resultDisplay.addEventListener('DOMSubtreeModified', () => {
+    if (resultDisplay.textContent.includes("Win")) {
+        playSound('win');
+    } else if (resultDisplay.textContent.includes("Lose")) {
+        playSound('lose');
+    } else if (resultDisplay.textContent.includes("tie")) {
+        playSound('tie');
+    }
+});
 
- 
-
-
-
-
-
-
+// Add animations
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        button.classList.add('clicked');
+        setTimeout(() => {
+            button.classList.remove('clicked');
+        }, 300);
+    });
+});
