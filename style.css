@@ -31,12 +31,12 @@ button{
 }
 i{
     font-size: 20px;
-    color: #022b0d;
+    color:  #098029;
     gap:20px;
     padding: 3px;
 }
 button:hover{
-    background: #098029;
+    background:#ddd;
 }
 #score, #result{
     margin:20px 0;
