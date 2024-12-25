@@ -1,3 +1,5 @@
+
+
 function getComputerChoice(){
   let computerChoice = Math.random();
   let compOption;
@@ -17,57 +19,79 @@ function getComputerChoice(){
 let humanScore = 0;
 let compScore = 0;
 
+const resultDisplay = document.getElementById('result')
+const tryAgainButton = document.getElementById('tryAgain')
+const scoreDisplay = document.getElementById('score')
+const buttons = document.querySelectorAll('button')
 
-document.querySelectorAll('.choice').forEach(button =>{
-  button.addEventListener('click', () =>{
-    const playerChoice = button.dataset.choice;
+function updateScore(){
+  scoreDisplay.textContent = `Human: ${humanScore} Computer: ${compScore}`
+}
 
-    console.log(`PlayerSelected: ${playerChoice}`)
-    playRound(playerChoice)
-  })
-
-})
-
+function checkWinner(){
+  if(humanScore === 5 || compScore === 5){
+    const winner = humanScore === 5 ? "Human" : "Computer;"
+    resultDisplay.textContent = `${winner} wins the game!`;
+    buttons.forEach(button => button.disabled =true);
+    tryAgainButton.style.display = "block"
+    tryAgainButton.disabled=false;
+    return true;
+  }
+  return false;
+}
 function playRound(humanChoice){
-  if(humanScore>=5 || compScore>= 5){
+ 
+  if(humanScore === 5 || compScore === 5){
     return;
   }
- 
-  const computerSelection = getComputerChoice()
-  console.log(`Human: ${humanChoice} Computer: ${computerSelection}`)
 
-  const resultElement = document.querySelector('#result')
-  const scoreElement = document.querySelector('#score')
+  const computerSelection = getComputerChoice()
+
   if (humanChoice === computerSelection.toLowerCase()){
-    result.textContent = (`Human Selected ${humanChoice} computer Selected ${computerSelection} ITS A DRAW`)
+    resultDisplay.textContent = `It's a DRAW `
     humanScore++, compScore++
+
   }else if((humanChoice === 'rock' && computerSelection.toLowerCase() === 'scissors') ||
    (humanChoice === "paper" && computerSelection.toLowerCase() === "rock")
    || (humanChoice === 'scissors' && computerSelection.toLowerCase() === "paper")){
-    result.textContent = (`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Human Won!!!`)
+    resultDisplay.textContent = `You Win!  ${humanChoice}  beats  ${computerSelection}.`
     humanScore++
    }else{
-    result.textContent = (`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Computer Won!!!`)
+    resultDisplay.textContent = `You lose!!  ${computerSelection}  beats  ${humanChoice}. `
     compScore++
    }
-
-   scoreElement.textContent = `Human Score: ${humanScore} Computer Score: ${compScore}`
-
- if (humanScore === 5 && compScore === 5){
-  result.textContent ='its a DRAW!!'
-  disableButtons();
- } else if(humanScore === 5){
-  result.textContent = 'Congratulations Human Won the game'
- }else{ if(compScore === 5)
-  result.textContent ='Computer Won the Game'
- }
+   updateScore()
+   checkWinner()
+   
  }
 
-function disableButtons(){
-  document.querySelectorAll('.choice').forEach(button =>{
-    button.disabled = true;
-  })
-}
+
+buttons.forEach(button =>{
+  button.addEventListener('click', (e) =>{
+    const playerChoice = e.target.getAttribute('data-choice');
+
+    playRound(playerChoice);
+  });
+  
+})
+
+tryAgainButton.addEventListener('click', () =>{
+  humanScore = 0;
+  compScore= 0;
+  updateScore();
+
+  tryAgainButton.style.display ='none';
+  tryAgainButton.style.alignItems='center'
+  tryAgainButton.style.justiItems ='center'
+
+  
+  
+ 
+
+  buttons.forEach(button => button.disabled = false);
+});
+const ToggleOff = document.querySelector('.toggle')
+updateScore()
 
 
 
