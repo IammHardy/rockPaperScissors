@@ -17,54 +17,64 @@ function getComputerChoice(){
 let humanScore = 0;
 let compScore = 0;
 
-function playRound(){
-  let humanChoice= prompt('Enter Rock Paper Scissors').toLowerCase();
+
+document.querySelectorAll('.choice').forEach(button =>{
+  button.addEventListener('click', () =>{
+    const playerChoice = button.dataset.choice;
+
+    console.log(`PlayerSelected: ${playerChoice}`)
+    playRound(playerChoice)
+  })
+
+})
+
+function playRound(humanChoice){
+  if(humanScore>=5 || compScore>= 5){
+    return;
+  }
+ 
   const computerSelection = getComputerChoice()
-  
+  console.log(`Human: ${humanChoice} Computer: ${computerSelection}`)
+
+  const resultElement = document.querySelector('#result')
+  const scoreElement = document.querySelector('#score')
   if (humanChoice === computerSelection.toLowerCase()){
-    alert(`Human Selected ${humanChoice} computer Selected ${computerSelection} ITS A DRAW`)
+    result.textContent = (`Human Selected ${humanChoice} computer Selected ${computerSelection} ITS A DRAW`)
     humanScore++, compScore++
   }else if((humanChoice === 'rock' && computerSelection.toLowerCase() === 'scissors') ||
    (humanChoice === "paper" && computerSelection.toLowerCase() === "rock")
    || (humanChoice === 'scissors' && computerSelection.toLowerCase() === "paper")){
-    alert(`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Human Won!!!`)
+    result.textContent = (`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Human Won!!!`)
     humanScore++
    }else{
-    alert(`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Computer Won!!!`)
+    result.textContent = (`Human Selected:  ${humanChoice}  computer Selected:  ${computerSelection}. Computer Won!!!`)
     compScore++
    }
-   return;
+
+   scoreElement.textContent = `Human Score: ${humanScore} Computer Score: ${compScore}`
+
+ if (humanScore === 5 && compScore === 5){
+  result.textContent ='its a DRAW!!'
+  disableButtons();
+ } else if(humanScore === 5){
+  result.textContent = 'Congratulations Human Won the game'
+ }else{ if(compScore === 5)
+  result.textContent ='Computer Won the Game'
+ }
+ }
+
+function disableButtons(){
+  document.querySelectorAll('.choice').forEach(button =>{
+    button.disabled = true;
+  })
 }
 
 
 
-
-
-function playGame(){
  
-  let count = 0;
 
-  while(count<5){
-    playRound();
-    count++;
-    console.log(`Round  ${count} just ended`)
-    console.log(`Human Total Score: ${humanScore}`)
-    console.log(`Computer Total Score: ${compScore}`)
-  }
-  return;
 
- 
-}
 
-function whoWon(){
-  if(humanScore>compScore){
-    console.log(`Human Score: ${humanScore}  x computer Score:${compScore}. HUMAN WON!!!`)
-  }else{
-    console.log(`Human Score: ${humanScore}  x ${compScore}:computer Score. COMPUTER WON!!!`)
-  }
-  return;
-}
-playGame()
-whoWon()
+
 
 
