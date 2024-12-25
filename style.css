@@ -16,6 +16,9 @@ body{
 #tryAgain{
     display: block;
     margin:20px auto;
+    background: red;
+    color: white;
+    font-size: 20px;
 }
 button{
     margin:10px;
@@ -26,8 +29,14 @@ button{
     border:none;
     border-radius: 5px;
 }
+i{
+    font-size: 20px;
+    color: #022b0d;
+    gap:20px;
+    padding: 3px;
+}
 button:hover{
-    background: #dcdcdc;
+    background: #098029;
 }
 #score, #result{
     margin:20px 0;
